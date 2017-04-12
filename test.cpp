@@ -3,8 +3,10 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <iostream>
+#include <alchemy/mutex.h>
 #include <alchemy/task.h>
 #include <alchemy/timer.h>
+// #include <trank/rtdk.h>
 
 RT_TASK demo_task[5];
 
@@ -16,14 +18,16 @@ void demo(void *arg)
   RT_TASK_INFO curtaskinfo;
 
   // hello world
-  rt_printf("Hello World!\n");
+  printf("Hello World!\n");
 
   // inquire current task
   curtask=rt_task_self();
   rt_task_inquire(curtask,&curtaskinfo);
-
+  RT_MUTEX m;
+  int r = rt_mutex_create(&m,0);
+  printf("r : %d\n",r);
   // print task name
-  rt_printf("Task name : %s \n", curtaskinfo.name);
+  printf("Task name : %s \n", curtaskinfo.name);
 
 }
 
@@ -31,7 +35,9 @@ void demo(void *arg)
 int main(int argc, char* argv[])
 {
   char  str[5][10] ;
-
+  usleep(5E5);
+  // rt_print_auto_init(1);
+  
   sprintf(str[0],"hello");
   sprintf(str[1],"hello1");
   sprintf(str[2],"hello2");
