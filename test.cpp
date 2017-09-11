@@ -3,10 +3,19 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <iostream>
-#include <mutex.h>
-#include <task.h>
-#include <timer.h>
 #include <sstream>
+// Xenomai 2 and 3
+#include <xeno_config.h>
+#if CONFIG_XENO_VERSION_MAJOR == 3
+#include <xenomai/init.h>
+#include <alchemy/mutex.h>
+#include <alchemy/task.h>
+#include <alchemy/timer.h>
+#elif CONFIG_XENO_VERSION_MAJOR == 2
+#include <native/mutex.h>
+#include <native/task.h>
+#include <native/timer.h>
+#endif
 
 std::string to_string(int i)
 {
@@ -41,10 +50,7 @@ void demo(void *arg)
     rt_task_sleep(rt_timer_ns2ticks(2E9));
 }
 
-#include <xeno_config.h>
-#if CONFIG_XENO_VERSION_MAJOR == 3
-#include <xenomai/init.h>
-#endif
+
 
 int main(int argc, char* argv[])
 {
