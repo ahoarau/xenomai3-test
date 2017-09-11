@@ -3,12 +3,21 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <iostream>
-#include <alchemy/mutex.h>
-#include <alchemy/task.h>
-#include <alchemy/timer.h>
-// #include <trank/rtdk.h>
+#include <mutex.h>
+#include <task.h>
+#include <timer.h>
+#include <sstream>
 
-RT_TASK demo_task[5];
+std::string to_string(int i)
+{
+    std::ostringstream os;
+    os << i;
+    return os.str();
+}
+
+static const int ntasks = 5;
+
+RT_TASK demo_task[ntasks];
 
 void demo(void *arg)
 
@@ -25,31 +34,33 @@ void demo(void *arg)
   rt_task_inquire(curtask,&curtaskinfo);
   RT_MUTEX m;
   int r = rt_mutex_create(&m,0);
-  printf("r : %d\n",r);
+  printf("rt_mutex_create : %s\n",(r == 0 ? "OK" : "ERROR"));
   // print task name
   printf("Task name : %s \n", curtaskinfo.name);
 
+  rt_task_sleep(rt_timer_ns2ticks(2E9));
 }
 
- 
+
 int main(int argc, char* argv[])
 {
-  char  str[5][10] ;
-  usleep(5E5);
-  // rt_print_auto_init(1);
-  
-  sprintf(str[0],"hello");
-  sprintf(str[1],"hello1");
-  sprintf(str[2],"hello2");
-  sprintf(str[3],"hello3");
-  sprintf(str[4],"hello4");
+  char  str[ntasks][10] ;
+  printf("Starting test\n");
+  rt_task_sleep(rt_timer_ns2ticks(5E8));
 
-  for(int i = 0; i < 5; i++)
-    rt_task_create(&demo_task[i], str[i], 0, 50 + i, 0);
+  for(int i = 0; i < ntasks; i++)
+    sprintf(str[i],("Hello " + to_string(i)).c_str());
 
-  for(int i = 0; i < 5; i++)
+  for(int i = 0; i < ntasks; i++)
+    rt_task_create(&demo_task[i], str[i], 0, 50 + i, T_JOINABLE);
+
+  for(int i = 0; i < ntasks; i++)
     rt_task_start(&demo_task[i], &demo, 0);
-    
-  usleep(1E6);
+
+  for(int i = 0; i < ntasks; i++)
+    rt_task_join(&demo_task[i]);
+
+  // std::cout << "Press Enter to Exit";
+  // std::cin.ignore();
   return 0;
 }

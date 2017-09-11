@@ -13,8 +13,6 @@
 #
 ################################################################################
 
-include(LibFindMacros)
-
 # Get hint from environment variable (if any)
 if(NOT $ENV{XENOMAI_ROOT_DIR} STREQUAL "")
   set(XENOMAI_ROOT_DIR $ENV{XENOMAI_ROOT_DIR} CACHE PATH "Xenomai base directory location (optional, used for nonstandard installation paths)" FORCE)
@@ -57,6 +55,7 @@ if(${XENOMAI_VERSION_MAJOR} EQUAL 3)
     set(XENOMAI_SKIN_NAME   alchemy)
     # NOTE: --auto-init-solib adds boostrap_pic to build shared libs
     set(XENOMAI_LDFLAGS_EXTRA_ARGS "--auto-init-solib")
+    #set(XENOMAI_LDFLAGS_EXTRA_ARGS "--no-auto-init")
 endif()
 
 if(NOT XENOMAI_SKIN_NAME)
@@ -68,6 +67,8 @@ message(STATUS "Xenomai ${XENOMAI_VERSION} detected, searching for ${XENOMAI_SKI
 execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --skin=${XENOMAI_SKIN_NAME} --ldflags ${XENOMAI_LDFLAGS_EXTRA_ARGS} OUTPUT_VARIABLE XENOMAI_LDFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
 execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --skin=${XENOMAI_SKIN_NAME} --cflags ${XENOMAI_COMPAT} OUTPUT_VARIABLE XENOMAI_CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
 
+set(XENOMAI_FOUND TRUE)
+
 string(STRIP ${XENOMAI_LDFLAGS} XENOMAI_LIBRARY)
 
 string(REGEX MATCHALL "-I([^ ]+)" XENOMAI_INCLUDE_DIR ${XENOMAI_CFLAGS})
@@ -75,9 +76,5 @@ string(REGEX MATCHALL "-D([^ ]+)" XENOMAI_COMPILE_DEFINITION ${XENOMAI_CFLAGS})
 add_definitions(${XENOMAI_COMPILE_DEFINITION})
 string(REPLACE "-I" ";" XENOMAI_INCLUDE_DIR ${XENOMAI_INCLUDE_DIR})
 
-# Set the include dir variables and the libraries and let libfind_process do the rest.
-# NOTE: Singular variables for this library, plural for libraries this this lib depends on.
-set(XENOMAI_PROCESS_INCLUDES XENOMAI_INCLUDE_DIR)
-set(XENOMAI_PROCESS_LIBS XENOMAI_LIBRARY)
-
-libfind_process(XENOMAI)
+set(XENOMAI_LIBRARIES ${XENOMAI_LIBRARY})
+set(XENOMAI_INCLUDE_DIRS ${XENOMAI_INCLUDE_DIR})

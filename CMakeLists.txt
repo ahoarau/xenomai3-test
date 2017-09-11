@@ -6,14 +6,13 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/config")
 find_package(Xenomai REQUIRED)
 
 message("
+=====================================================
+Xenomai version ${XENOMAI_VERSION}
 
-Xenomai ${XENOMAI_VERSION}
+    Libraries : ${XENOMAI_LIBRARIES}
+    Include directories : ${XENOMAI_INCLUDE_DIRS}
 
-libs : ${XENOMAI_LIBRARIES}
-include : ${XENOMAI_INCLUDE_DIRS}
-
-
-
+=====================================================
 ")
 
 include_directories(${XENOMAI_INCLUDE_DIRS})
