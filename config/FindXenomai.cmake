@@ -55,8 +55,8 @@ endif()
 if(${XENOMAI_VERSION_MAJOR} EQUAL 3)
     set(XENOMAI_SKIN_NAME   alchemy)
     # NOTE: --auto-init-solib adds bootstrap_pic to build shared libs
-    #set(XENO_CONFIG_LDFLAGS_EXTRA_ARGS "--auto-init-solib")
-    set(XENO_CONFIG_LDFLAGS_EXTRA_ARGS "--no-auto-init" "--no-mode-check")
+    set(XENO_CONFIG_LDFLAGS_EXTRA_ARGS "--auto-init-solib")
+    #set(XENO_CONFIG_LDFLAGS_EXTRA_ARGS "--no-auto-init")
 endif()
 
 if(NOT XENOMAI_SKIN_NAME)
