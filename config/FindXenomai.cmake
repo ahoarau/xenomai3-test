@@ -12,6 +12,7 @@
 #  XENOMAI_LIBRARIES: Package libraries
 #
 ################################################################################
+include(LibFindMacros)
 
 # Get hint from environment variable (if any)
 if(NOT $ENV{XENOMAI_ROOT_DIR} STREQUAL "")
@@ -67,8 +68,6 @@ message(STATUS "Xenomai ${XENOMAI_VERSION} detected, searching for ${XENOMAI_SKI
 execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --skin=${XENOMAI_SKIN_NAME} --ldflags ${XENO_CONFIG_LDFLAGS_EXTRA_ARGS} OUTPUT_VARIABLE XENOMAI_LDFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
 execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --skin=${XENOMAI_SKIN_NAME} --cflags ${XENOMAI_COMPAT} OUTPUT_VARIABLE XENOMAI_CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-set(XENOMAI_FOUND TRUE)
-
 string(STRIP ${XENOMAI_LDFLAGS} XENOMAI_LIBRARY)
 
 string(REGEX MATCHALL "-I([^ ]+)" XENOMAI_INCLUDE_DIR ${XENOMAI_CFLAGS})
@@ -76,5 +75,9 @@ string(REGEX MATCHALL "-D([^ ]+)" XENOMAI_COMPILE_DEFINITION ${XENOMAI_CFLAGS})
 add_definitions(${XENOMAI_COMPILE_DEFINITION})
 string(REPLACE "-I" ";" XENOMAI_INCLUDE_DIR ${XENOMAI_INCLUDE_DIR})
 
-set(XENOMAI_LIBRARIES ${XENOMAI_LIBRARY})
-set(XENOMAI_INCLUDE_DIRS ${XENOMAI_INCLUDE_DIR})
+# Set the include dir variables and the libraries and let libfind_process do the rest.
+# NOTE: Singular variables for this library, plural for libraries this this lib depends on.
+set(XENOMAI_PROCESS_INCLUDES XENOMAI_INCLUDE_DIR)
+set(XENOMAI_PROCESS_LIBS XENOMAI_LIBRARY)
+
+libfind_process(XENOMAI)
