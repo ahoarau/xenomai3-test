@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(xeno-test CXX)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/config")
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/config)
 
 find_package(Xenomai REQUIRED)
 

@@ -87,7 +87,7 @@ function(handle_standard_args prefix)
     find_package_handle_standard_args(${prefix} DEFAULT_MSG ${prefix}_LIBRARIES ${prefix}_INCLUDE_DIRS ${prefix}_COMPILE_DEFINITIONS ${prefix}_CFLAGS ${prefix}_LDFLAGS)
 endfunction()
 
-if(XENOMAI_XENO_CONFIG )
+if(XENOMAI_XENO_CONFIG)
     # Detect Xenomai version
     execute_process(COMMAND ${XENOMAI_XENO_CONFIG} --version OUTPUT_VARIABLE XENOMAI_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
     string(REPLACE "." ";" XENOMAI_VERSION_LIST ${XENOMAI_VERSION} )
